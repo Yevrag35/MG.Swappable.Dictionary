@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace MG.Swappable
@@ -12,6 +14,14 @@ namespace MG.Swappable
         #region CONSTRUCTORS
         public SwappableDictionary() : base() { }
         public SwappableDictionary(int capacity) : base(capacity) { }
+        private SwappableDictionary(IDictionary genDict)
+            : base(genDict.Count)
+        { 
+            foreach (DictionaryEntry de in genDict)
+            {
+                base.Add(Convert.ToString(de.Key), de.Value);
+            }
+        }
         public SwappableDictionary(IDictionary<string, object> dictionary) : base(dictionary) {  }
         public SwappableDictionary(IEqualityComparer<string> comparer) : base(comparer) { }
         public SwappableDictionary(int capacity, IEqualityComparer<string> comparer) : base(capacity, comparer) { }
@@ -118,6 +128,11 @@ namespace MG.Swappable
             else
                 throw new KeyNotFoundException(string.Format(ERR_MSG, swapWith.OldKey));
         }
+
+        #endregion
+
+        #region STATIC METHODS
+        public static SwappableDictionary FromIDictionary(IDictionary genDict) => new SwappableDictionary(genDict);
 
         #endregion
     }
